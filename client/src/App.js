@@ -1,11 +1,23 @@
-import React, { Component } from "react";
-import SimpleStorageContract from "./contracts/SimpleStorage.json";
-import getWeb3 from "./getWeb3";
+import React, { Component } from "react"
+
+import PersonNamer from './components/person-namer'
+import SimpleContractDisplay from './components/simple-contract-display'
+import NetworkContext from './components/network-context'
+
+import SimpleStorageContract from "./contracts/SimpleStorage.json"
+import getWeb3 from "./getWeb3"
 
 import "./App.css";
 
 class App extends Component {
-  state = { storageValue: 0, web3: null, accounts: null, contract: null };
+  state = { 
+    storageValue: 0, 
+    web3: null, 
+    accounts: null, 
+    contract: null,
+    networkId: null,
+    name: ''
+  };
 
   componentDidMount = async () => {
     try {
@@ -25,7 +37,7 @@ class App extends Component {
 
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
-      this.setState({ web3, accounts, contract: instance }, this.runExample);
+      this.setState({ web3, accounts, networkId, contract: instance }, this.runExample);
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -48,10 +60,20 @@ class App extends Component {
     this.setState({ storageValue: response });
   };
 
+  onNameChange = (e) => {
+    this.setState({name: e.target.value})
+  }
+
+  onNameSubmit = (e) => {
+    e.preventDefault()
+    console.log(e)
+  }
+
   render() {
     if (!this.state.web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
     }
+
     return (
       <div className="App">
         <h1>Good to Go!</h1>
@@ -65,6 +87,15 @@ class App extends Component {
           Try changing the value stored on <strong>line 40</strong> of App.js.
         </p>
         <div>The stored value is: {this.state.storageValue}</div>
+        <NetworkContext.Provider value={
+          {
+            web3: this.state.web3,
+            networkId: this.state.networkId
+          }
+          }>
+          <SimpleContractDisplay />
+          <PersonNamer name={this.state.name} onChange={this.onNameChange} onSubmit={this.onNameSubmit} />
+        </NetworkContext.Provider>
       </div>
     );
   }
