@@ -24,4 +24,8 @@ contract PersonFactory {
     ownerPersonCount[msg.sender]++;
     emit NewPerson(id, _name, true);
   }
+
+  function get () public view returns (string memory) {
+    return people[0].name;
+  }
 }

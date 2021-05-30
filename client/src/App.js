@@ -28,15 +28,6 @@ class App extends Component {
     this.setState({ storageValue: response })
   }
 
-  onNameChange = (e) => {
-    this.setState({name: e.target.value})
-  }
-
-  onNameSubmit = (e) => {
-    e.preventDefault()
-    console.log(e)
-  }
-
   onNetworkResolve = (network) => {
     this.setState({
       web3: network.web3,
@@ -75,7 +66,7 @@ class App extends Component {
           }
           }>
           <SimpleContractDisplay />
-          <PersonNamer name={this.state.name} onChange={this.onNameChange} onSubmit={this.onNameSubmit} />
+          <PersonNamer />
         </NetworkContext.Provider>
       </div>
     )
