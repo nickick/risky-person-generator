@@ -12,7 +12,7 @@ class SimpleContractDisplay extends Component {
     contract: null
   }
 
-  componentDidUpdate = async () => {
+  componentDidMount = async () => {
     if (!this.state.networkId || !this.state.web3) {
       const { networkId, web3 } = this.context
       const deployedNetwork = SimpleStorageContract.networks[networkId];
@@ -21,13 +21,26 @@ class SimpleContractDisplay extends Component {
         deployedNetwork && deployedNetwork.address,
       );
 
-      this.setState({networkId, web3, contract: instance})
+      this.setState({networkId, web3, contract: instance}, this.runExample )
     }
   }
 
+  runExample = async () => {
+    const { contract } = this.state
+    const { accounts } = this.context
+
+    // Stores a given value, 5 by default.
+    await contract.methods.set(5).send({ from: accounts[0] })
+
+    // Get the value from the contract to prove it worked.
+    const response = await contract.methods.get().call()
+
+    // Update state with the result.
+    this.setState({ storageValue: response })
+  }
+
   render () {
-    console.log(this.context)
-    return ''
+    return <div>The stored value is: {this.state.storageValue}</div>
   }
 }
 
