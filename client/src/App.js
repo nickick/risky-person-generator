@@ -5,9 +5,6 @@ import SimpleContractDisplay from './components/simple-contract-display'
 import Network from './components/network'
 import NetworkContext from './components/network-context'
 
-import SimpleStorageContract from "./contracts/SimpleStorage.json"
-import getWeb3 from "./getWeb3"
-
 import "./App.css"
 
 class App extends Component {
