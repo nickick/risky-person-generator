@@ -25,7 +25,7 @@ contract PersonFactory {
     emit NewPerson(id, _name, true);
   }
 
-  function get () public view returns (string memory) {
-    return people[0].name;
+  function get () public view returns (string memory, uint) {
+    return (people[0].name, people.length);
   }
 }

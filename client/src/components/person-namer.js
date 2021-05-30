@@ -11,7 +11,8 @@ class PersonNamer extends Component {
     web3: null,
     contract: null,
     name: '',
-    people: null
+    people: null,
+    count: 0
   }
 
   componentDidMount = async () => {
@@ -23,8 +24,14 @@ class PersonNamer extends Component {
         deployedNetwork && deployedNetwork.address,
       );
 
-      this.setState({networkId, web3, contract: instance})
+      this.setState({networkId, web3, contract: instance}, this.getCount)
     }
+  }
+
+  getCount = async () => {
+    const { contract } = this.state
+    const result = await contract.methods.get().call()
+    this.setState({ count: result[1] })
   }
 
   onChange = (e) => {
@@ -37,15 +44,16 @@ class PersonNamer extends Component {
     const { accounts } = this.context
     await contract.methods.createPerson(this.state.name).send({ from: accounts[0], gas: 1000000 })
     const response = await contract.methods.get().call()
-    console.log(response)
-    this.setState({people: response})
+    this.setState({people: response[0], count: response[1]})
   }
 
   render () {
     return (
       <form onSubmit={this.onSubmit}>
         <input type='text' value={this.state.name} placeholder='input name' onChange={this.onChange} />
-        {this.state.people}
+        <div>{this.state.people}</div>
+        <div>{this.state.count}</div>
+
       </form>
     )
   }
